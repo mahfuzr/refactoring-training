@@ -5,33 +5,31 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace Refactoring
 {
     public class Tusc
     {
+
         public static void Start(List<User> usrs, List<Product> prods)
         {
-            // Write welcome message
-            Console.WriteLine("Welcome to TUSC");
-            Console.WriteLine("---------------");
+
+            DisplayWelcomeMessage();
 
             // Login
             Login:
             bool loggedIn = false; // Is logged in?
-
-            // Prompt for user input
-            Console.WriteLine();
-            Console.WriteLine("Enter Username:");
-            string name = Console.ReadLine();
+                        
+            string name = GetUserName();
 
             // Validate Username
             bool valUsr = false; // Is valid user?
+
             if (!string.IsNullOrEmpty(name))
             {
-                for (int i = 0; i < 5; i++)
+                foreach (User user in usrs)
                 {
-                    User user = usrs[i];
                     // Check that name matches
                     if (user.Name == name)
                     {
@@ -42,16 +40,12 @@ namespace Refactoring
                 // if valid user
                 if (valUsr)
                 {
-                    // Prompt for user input
-                    Console.WriteLine("Enter Password:");
-                    string pwd = Console.ReadLine();
+                    string pwd = GetCredentials();
 
                     // Validate Password
                     bool valPwd = false; // Is valid password?
-                    for (int i = 0; i < 5; i++)
+                    foreach (User user in usrs)
                     {
-                        User user = usrs[i];
-
                         // Check that name and password match
                         if (user.Name == name && user.Pwd == pwd)
                         {
@@ -64,46 +58,25 @@ namespace Refactoring
                     {
                         loggedIn = true;
 
-                        // Show welcome message
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine();
-                        Console.WriteLine("Login successful! Welcome " + name + "!");
-                        Console.ResetColor();
+                        DisplayLoginMessage(name);
                         
                         // Show remaining balance
-                        double bal = 0;
-                        for (int i = 0; i < 5; i++)
-                        {
-                            User usr = usrs[i];
-
+                          double bal = 0;
+                          foreach (User user in usrs)
+                          {
                             // Check that name and password match
-                            if (usr.Name == name && usr.Pwd == pwd)
+                            if (user.Name == name && user.Pwd == pwd)
                             {
-                                bal = usr.Bal;
+                                bal = user.Bal;
 
-                                // Show balance 
-                                Console.WriteLine();
-                                Console.WriteLine("Your balance is " + usr.Bal.ToString("C"));
+                                ShowBalanceMessaege();
                             }
                         }
 
                         // Show product list
                         while (true)
                         {
-                            // Prompt for user input
-                            Console.WriteLine();
-                            Console.WriteLine("What would you like to buy?");
-                            for (int i = 0; i < 7; i++)
-                            {
-                                Product prod = prods[i];
-                                Console.WriteLine(i + 1 + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
-                            }
-                            Console.WriteLine(prods.Count + 1 + ": Exit");
-
-                            // Prompt for user input
-                            Console.WriteLine("Enter a number:");
-                            string answer = Console.ReadLine();
+                            string answer = GetUserInput(prods);
                             int num = Convert.ToInt32(answer);
                             num = num - 1; /* Subtract 1 from number
                             num = num + 1 // Add 1 to number */
@@ -225,6 +198,62 @@ namespace Refactoring
             Console.WriteLine();
             Console.WriteLine("Press Enter key to exit");
             Console.ReadLine();
+        }
+
+private static string GetUserInput(List<Product> prods)
+{
+                            // Prompt for user input
+                            Console.WriteLine();
+                            Console.WriteLine("What would you like to buy?");
+                            foreach (Product prod in prods)
+                            {  
+                                Console.WriteLine( (prods.FindIndex(prod.Equals) + ": " + prod.Name + " (" + prod.Price.ToString("C") + ")");
+                            }
+                            Console.WriteLine(prods.Count + 1 + ": Exit");
+
+                            // Prompt for user input
+                            Console.WriteLine("Enter a number:");
+                            string answer = Console.ReadLine();
+return answer;
+}
+
+        private static void ShowBalanceMessaege()
+        {
+            // Show balance 
+            Console.WriteLine();
+            Console.WriteLine("Your balance is " + usr.Bal.ToString("C"));
+        }
+
+        private static void DisplayLoginMessage(string name)
+        {
+            // Show welcome message
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine();
+            Console.WriteLine("Login successful! Welcome " + name + "!");
+            Console.ResetColor();
+        }
+
+        private static string GetCredentials()
+        {
+            // Prompt for user input
+            Console.WriteLine("Enter Password:");
+            string pwd = Console.ReadLine();
+            return pwd;
+        }
+
+        private static string GetUserName()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Enter Username:");
+            string name = Console.ReadLine();
+            return name;
+        }
+
+        private static void DisplayWelcomeMessage()
+        {
+            Console.WriteLine("Welcome to TUSC");
+            Console.WriteLine("---------------");
         }
     }
 }
